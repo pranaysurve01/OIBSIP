@@ -1,1 +1,121 @@
+import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Date;
 
+public class OnlineReservationSystem {
+    private HashMap<String, String> userCredentials = new HashMap<>();
+    private HashMap<String, Reservation> reservations = new HashMap<>();
+    private Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        OnlineReservationSystem system = new OnlineReservationSystem();
+        system.run();
+    }
+
+    public void run() {
+        while (true) {
+            System.out.println("1. Login");
+            System.out.println("2. Exit");
+            System.out.print("Enter option: ");
+            int option = scanner.nextInt();
+            scanner.nextLine();
+            switch (option) {
+                case 1:
+                    login();
+                    break;
+                case 2:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private void login() {
+        System.out.print("Enter login id: ");
+        String loginId = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+        if (userCredentials.containsKey(loginId) && userCredentials.get(loginId).equals(password)) {
+            System.out.println("Login successful.");
+            userMenu();
+        } else {
+            System.out.println("Invalid login id or password.");
+        }
+    }
+
+    private void userMenu() {
+        while (true) {
+            System.out.println("1. Make Reservation");
+            System.out.println("2. Cancel Reservation");
+            System.out.println("3. Logout");
+            System.out.print("Enter option: ");
+            int option = scanner.nextInt();
+            scanner.nextLine();
+            switch (option) {
+                case 1:
+                    makeReservation();
+                    break;
+                case 2:
+                    cancelReservation();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private void makeReservation() {
+        System.out.print("Enter PNR number: ");
+        String pnr = scanner.nextLine();
+        System.out.print("Enter train number: ");
+        String trainNumber = scanner.nextLine();
+        System.out.print("Enter train name: ");
+        String trainName = scanner.nextLine();
+        System.out.print("Enter class type: ");
+        String classType = scanner.nextLine();
+        System.out.print("Enter date of journey (yyyy-mm-dd): ");
+        String dateOfJourney = scanner.nextLine();
+        System.out.print("Enter from station: ");
+        String fromStation = scanner.nextLine();
+        System.out.print("Enter to station: ");
+        String toStation = scanner.nextLine();
+        Reservation reservation = new Reservation(pnr, trainNumber, trainName, classType, dateOfJourney, fromStation, toStation);
+        reservations.put(pnr, reservation);
+        System.out.println("Reservation successful. PNR: " + pnr);
+    }
+
+    private void cancelReservation() {
+        System.out.print("Enter PNR number to cancel: ");
+        String pnr = scanner.nextLine();
+        if (reservations.containsKey(pnr)) {
+            reservations.remove(pnr);
+            System.out.println("Cancellation successful.");
+        } else {
+            System.out.println("Reservation with PNR " + pnr + " not found.");
+        }
+    }
+
+    private class Reservation {
+        String pnr;
+        String trainNumber;
+        String trainName;
+        String classType;
+        String dateOfJourney;
+        String fromStation;
+        String toStation;
+
+        public Reservation(String pnr, String trainNumber, String trainName, String classType, String dateOfJourney, String fromStation, String toStation) {
+            this.pnr = pnr;
+            this.trainNumber = trainNumber;
+            this.trainName = trainName;
+            this.classType = classType;
+            this.dateOfJourney = dateOfJourney;
+            this.fromStation = fromStation;
+            this.toStation = toStation;
+        }
+    }
+}
