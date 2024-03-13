@@ -1,1 +1,90 @@
+import java.util.ArrayList;
+import java.util.Scanner;
 
+class Book {
+    String id, title, author;
+    boolean isIssued;
+
+    Book(String id, String title, String author) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isIssued = false;
+    }
+}
+
+class Library {
+    ArrayList<Book> books = new ArrayList<>();
+    Scanner scanner = new Scanner(System.in);
+
+    void addBook() {
+        System.out.println("Enter Book ID, Title, and Author:");
+        String id = scanner.nextLine();
+        String title = scanner.nextLine();
+        String author = scanner.nextLine();
+        books.add(new Book(id, title, author));
+        System.out.println("Book Added Successfully");
+    }
+
+    void viewBooks() {
+        for (Book book : books) {
+            System.out.println(book.id + " " + book.title + " by " + book.author + (book.isIssued ? " (Issued)" : ""));
+        }
+    }
+
+    void issueBook() {
+        System.out.println("Enter Book ID to Issue:");
+        String id = scanner.nextLine();
+        for (Book book : books) {
+            if (book.id.equals(id) && !book.isIssued) {
+                book.isIssued = true;
+                System.out.println("Book Issued Successfully");
+                return;
+            }
+        }
+        System.out.println("Book Not Found or Already Issued");
+    }
+
+    void returnBook() {
+        System.out.println("Enter Book ID to Return:");
+        String id = scanner.nextLine();
+        for (Book book : books) {
+            if (book.id.equals(id) && book.isIssued) {
+                book.isIssued = false;
+                System.out.println("Book Returned Successfully");
+                return;
+            }
+        }
+        System.out.println("Book Not Found or Not Issued");
+    }
+}
+
+public class DigitalLibraryManagement {
+    public static void main(String[] args) {
+        Library library = new Library();
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("1. Add Book\n2. View Books\n3. Issue Book\n4. Return Book\n5. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            switch (choice) {
+                case 1:
+                    library.addBook();
+                    break;
+                case 2:
+                    library.viewBooks();
+                    break;
+                case 3:
+                    library.issueBook();
+                    break;
+                case 4:
+                    library.returnBook();
+                    break;
+                case 5:
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid Choice");
+            }
+        }
+    }
+}
