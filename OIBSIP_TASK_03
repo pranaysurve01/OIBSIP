@@ -1,1 +1,124 @@
+import java.util.Scanner;
 
+class Account {
+    private int userId;
+    private int userPin;
+    private double balance;
+
+    public Account(int userId, int userPin, double balance) {
+        this.userId = userId;
+        this.userPin = userPin;
+        this.balance = balance;
+    }
+
+    public boolean checkPin(int pin) {
+        return this.userPin == pin;
+    }
+
+    public void showBalance() {
+        System.out.println("Current balance: " + balance);
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+        System.out.println("Deposited: " + amount);
+    }
+
+    public void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrawn: " + amount);
+        } else {
+            System.out.println("Insufficient funds.");
+        }
+    }
+
+    public void transfer(Account toAccount, double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            toAccount.deposit(amount);
+            System.out.println("Transferred: " + amount);
+        } else {
+            System.out.println("Insufficient funds.");
+        }
+    }
+}
+
+public class ATMInterface {
+    private static Account[] accounts = new Account[]{
+        new Account(123, 4567, 1000),
+        new Account(234, 8910, 2000)
+    };
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter user ID: ");
+        int userId = scanner.nextInt();
+        System.out.print("Enter PIN: ");
+        int pin = scanner.nextInt();
+
+        Account currentAccount = null;
+        for (Account acc : accounts) {
+            if (acc.checkPin(pin)) {
+                currentAccount = acc;
+                break;
+            }
+        }
+
+        if (currentAccount == null) {
+            System.out.println("Invalid ID or PIN.");
+            return;
+        }
+
+        int choice;
+        do {
+            System.out.println("1. Show Balance");
+            System.out.println("2. Deposit");
+            System.out.println("3. Withdraw");
+            System.out.println("4. Transfer");
+            System.out.println("5. Quit");
+            System.out.print("Choose an option: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    currentAccount.showBalance();
+                    break;
+                case 2:
+                    System.out.print("Enter deposit amount: ");
+                    double depositAmount = scanner.nextDouble();
+                    currentAccount.deposit(depositAmount);
+                    break;
+                case 3:
+                    System.out.print("Enter withdrawal amount: ");
+                    double withdrawalAmount = scanner.nextDouble();
+                    currentAccount.withdraw(withdrawalAmount);
+                    break;
+                case 4:
+                    System.out.print("Enter transfer amount: ");
+                    double transferAmount = scanner.nextDouble();
+                    System.out.print("Enter recipient user ID: ");
+                    int recipientId = scanner.nextInt();
+                    Account recipientAccount = null;
+                    for (Account acc : accounts) {
+                        if (acc.userId == recipientId) {
+                            recipientAccount = acc;
+                            break;
+                        }
+                    }
+                    if (recipientAccount != null) {
+                        currentAccount.transfer(recipientAccount, transferAmount);
+                    } else {
+                        System.out.println("Recipient not found.");
+                    }
+                    break;
+                case 5:
+                    System.out.println("Thank you for using the ATM.");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        } while (choice != 5);
+    }
+}
